@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>House Price Predictor</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+<!-- ═══ HEADER ═══════════════════════════════════════════ -->
+<header>
+  <div class="logo">
+    <span class="logo-mark">Housewise</span>
+    <span class="logo-sub">Price Intelligence</span>
+  </div>
+  <div class="header-actions">
+    <span class="badge">● Model Online</span>
+    <button class="toggle-btn" id="themeToggle">◑ Dark</button>
+  </div>
+</header>
+
+<!-- ═══ MAIN WRAPPER ══════════════════════════════════════ -->
+<div class="app-wrapper">
+
+  <!-- ── Hero ── -->
+  <div class="hero">
+    <h1 class="hero-title">Predict your<br><span>Property Value</span></h1>
+    <div class="hero-meta">
+      <div>Ames Housing Dataset</div>
+      <div>CatBoost · Scikit-Learn</div>
+      <div>79 Features</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       LEFT — FORM
+  ══════════════════════════════════════════ -->
+  <main>
+    <form id="houseForm" onsubmit="return false;">
+
+      <!-- ── 1. Zoning & Lot ── -->
+      <div class="form-panel">
+        <div class="section-header">
+          <span class="section-num">01</span>
+          <span class="section-title">Zoning &amp; Lot</span>
+        </div>
+        <div class="section-body">
+          <div class="form-grid">
+
+            <div class="field">
+              <label>MS SubClass <span class="unit">(building class)</span></label>
+              <select id="MSSubClass">
+                <option value="20">20 — 1-Story 1946+</option>
+                <option value="30">30 — 1-Story pre-1946</option>
+                <option value="40">40 — 1-Story with attic</option>
+                <option value="45">45 — 1.5-Story unfinished</option>
+                <option value="50">50 — 1.5-Story finished</option>
+                <option value="60" selected>60 — 2-Story 1946+</option>
+                <option value="70">70 — 2-Story pre-1946</option>
+                <option value="75">75 — 2.5-Story</option>
+                <option value="80">80 — Split / Multi-Level</option>
+                <option value="85">85 — Split Foyer</option>
+                <option value="90">90 — Duplex</option>
+                <option value="120">120 — 1-Story PUD</option>
+                <option value="150">150 — 1.5-Story PUD</option>
+                <option value="160">160 — 2-Story PUD</option>
+                <option value="180">180 — PUD Multi-Level</option>
+                <option value="190">190 — 2-Family conversion</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>MS Zoning</label>
+              <select id="MSZoning">
+                <option value="RL" selected>RL — Residential Low</option>
+                <option value="RM">RM — Residential Medium</option>
+                <option value="FV">FV — Floating Village</option>
+                <option value="RH">RH — Residential High</option>
+                <option value="C (all)">C (all) — Commercial</option>
+                <option value="I (all)">I (all) — Industrial</option>
+                <option value="A (agr)">A (agr) — Agriculture</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Lot Frontage <span class="unit">(ft)</span></label>
+              <input type="number" id="LotFrontage" placeholder="e.g. 65" min="0" max="300" />
+            </div>
+
+            <div class="field">
+              <label>Lot Area <span class="unit">(sq ft)</span></label>
+              <input type="number" id="LotArea" placeholder="e.g. 8450" min="1000" max="215000" value="8450" />
+            </div>
+
+            <div class="field">
+              <label>Street</label>
+              <select id="Street">
+                <option value="Pave" selected>Pave</option>
+                <option value="Grvl">Grvl — Gravel</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Lot Shape</label>
+              <select id="LotShape">
+                <option value="Reg" selected>Reg — Regular</option>
+                <option value="IR1">IR1 — Slightly irregular</option>
+                <option value="IR2">IR2 — Moderately irregular</option>
+                <option value="IR3">IR3 — Irregular</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Land Contour</label>
+              <select id="LandContour">
+                <option value="Lvl" selected>Lvl — Near Flat</option>
+                <option value="Bnk">Bnk — Banked</option>
+                <option value="HLS">HLS — Hillside</option>
+                <option value="Low">Low — Depression</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Utilities</label>
+              <select id="Utilities">
+                <option value="AllPub" selected>AllPub — All public</option>
+                <option value="NoSewr">NoSewr — Electricity, Gas, Water</option>
+                <option value="NoSeWa">NoSeWa — Electricity, Gas</option>
+                <option value="ELO">ELO — Electricity only</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Lot Config</label>
+              <select id="LotConfig">
+                <option value="Inside" selected>Inside</option>
+                <option value="Corner">Corner</option>
+                <option value="CulDSac">CulDSac</option>
+                <option value="FR2">FR2 — Frontage on 2 sides</option>
+                <option value="FR3">FR3 — Frontage on 3 sides</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Land Slope</label>
+              <select id="LandSlope">
+                <option value="Gtl" selected>Gtl — Gentle</option>
+                <option value="Mod">Mod — Moderate</option>
+                <option value="Sev">Sev — Severe</option>
+              </select>
+            </div>
+
+            <div class="field span-2">
+              <label>Neighborhood</label>
+              <select id="Neighborhood">
+                <option value="NAmes" selected>NAmes</option>
+                <option value="CollgCr">CollgCr</option>
+                <option value="Crawfor">Crawfor</option>
+                <option value="NoRidge">NoRidge</option>
+                <option value="Mitchel">Mitchel</option>
+                <option value="Somerst">Somerst</option>
+                <option value="NWAmes">NWAmes</option>
+                <option value="OldTown">OldTown</option>
+                <option value="BrkSide">BrkSide</option>
+                <option value="Sawyer">Sawyer</option>
+                <option value="NridgHt">NridgHt</option>
+                <option value="MeadowV">MeadowV</option>
+                <option value="Edwards">Edwards</option>
+                <option value="Timber">Timber</option>
+                <option value="Gilbert">Gilbert</option>
+                <option value="StoneBr">StoneBr</option>
+                <option value="ClearCr">ClearCr</option>
+                <option value="NPkVill">NPkVill</option>
+                <option value="Blmngtn">Blmngtn</option>
+                <option value="BrDale">BrDale</option>
+                <option value="SWISU">SWISU</option>
+                <option value="Blueste">Blueste</option>
+                <option value="Greens">Greens</option>
+                <option value="GrnHill">GrnHill</option>
+                <option value="Landmrk">Landmrk</option>
+                <option value="Veenker">Veenker</option>
+                <option value="IDOTRR">IDOTRR</option>
+                <option value="SawyerW">SawyerW</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Condition 1</label>
+              <select id="Condition1">
+                <option value="Norm" selected>Norm</option>
+                <option value="Feedr">Feedr</option>
+                <option value="PosN">PosN</option>
+                <option value="Artery">Artery</option>
+                <option value="RRAe">RRAe</option>
+                <option value="RRNn">RRNn</option>
+                <option value="RRAn">RRAn</option>
+                <option value="PosA">PosA</option>
+                <option value="RRNe">RRNe</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Condition 2</label>
+              <select id="Condition2">
+                <option value="Norm" selected>Norm</option>
+                <option value="Feedr">Feedr</option>
+                <option value="PosN">PosN</option>
+                <option value="Artery">Artery</option>
+                <option value="RRNn">RRNn</option>
+                <option value="PosA">PosA</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Building Type</label>
+              <select id="BldgType">
+                <option value="1Fam" selected>1Fam — Single-family</option>
+                <option value="2fmCon">2fmCon — Two-family conversion</option>
+                <option value="Duplex">Duplex</option>
+                <option value="TwnhsE">TwnhsE — Townhouse End</option>
+                <option value="Twnhs">Twnhs — Townhouse Inside</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>House Style</label>
+              <select id="HouseStyle">
+                <option value="1Story">1Story</option>
+                <option value="2Story" selected>2Story</option>
+                <option value="1.5Fin">1.5Fin</option>
+                <option value="1.5Unf">1.5Unf</option>
+                <option value="SFoyer">SFoyer</option>
+                <option value="SLvl">SLvl</option>
+                <option value="2.5Unf">2.5Unf</option>
+                <option value="2.5Fin">2.5Fin</option>
+              </select>
+            </div>
+
+          </div>
+        </div>
+      </div><!-- /Zoning & Lot -->
+
+      <hr class="form-divider" />
+
+      <!-- ── 2. Quality & Age ── -->
+      <div class="form-panel">
+        <div class="section-header">
+          <span class="section-num">02</span>
+          <span class="section-title">Quality &amp; Age</span>
+        </div>
+        <div class="section-body">
+          <div class="form-grid">
+
+            <div class="field">
+              <label>Overall Quality <span class="unit">(1–10)</span></label>
+              <input type="number" id="OverallQual" placeholder="Rating 1–10" min="1" max="10" value="7" />
+            </div>
+
+            <div class="field">
+              <label>Overall Condition <span class="unit">(1–10)</span></label>
+              <input type="number" id="OverallCond" placeholder="Rating 1–10" min="1" max="10" value="5" />
+            </div>
+
+            <div class="field">
+              <label>Year Built</label>
+              <input type="number" id="YearBuilt" placeholder="e.g. 2003" min="1800" max="2025" value="2003" />
+            </div>
+
+            <div class="field">
+              <label>Year Remodelled</label>
+              <input type="number" id="YearRemodAdd" placeholder="e.g. 2005" min="1800" max="2025" value="2003" />
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <hr class="form-divider" />
+
+      <!-- ── 3. Roof & Exterior ── -->
+      <div class="form-panel">
+        <div class="section-header">
+          <span class="section-num">03</span>
+          <span class="section-title">Roof &amp; Exterior</span>
+        </div>
+        <div class="section-body">
+          <div class="form-grid">
+
+            <div class="field">
+              <label>Roof Style</label>
+              <select id="RoofStyle">
+                <option value="Gable" selected>Gable</option>
+                <option value="Hip">Hip</option>
+                <option value="Flat">Flat</option>
+                <option value="Gambrel">Gambrel</option>
+                <option value="Mansard">Mansard</option>
+                <option value="Shed">Shed</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Roof Material</label>
+              <select id="RoofMatl">
+                <option value="CompShg" selected>CompShg</option>
+                <option value="WdShngl">WdShngl</option>
+                <option value="Metal">Metal</option>
+                <option value="WdShake">WdShake</option>
+                <option value="Membran">Membran</option>
+                <option value="Tar&Grv">Tar&Grv</option>
+                <option value="Roll">Roll</option>
+                <option value="ClyTile">ClyTile</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Exterior 1st</label>
+              <select id="Exterior1st">
+                <option value="VinylSd" selected>VinylSd</option>
+                <option value="MetalSd">MetalSd</option>
+                <option value="Wd Sdng">Wd Sdng</option>
+                <option value="HdBoard">HdBoard</option>
+                <option value="BrkFace">BrkFace</option>
+                <option value="WdShing">WdShing</option>
+                <option value="CemntBd">CemntBd</option>
+                <option value="Plywood">Plywood</option>
+                <option value="AsbShng">AsbShng</option>
+                <option value="Stucco">Stucco</option>
+                <option value="BrkComm">BrkComm</option>
+                <option value="AsphShn">AsphShn</option>
+                <option value="Stone">Stone</option>
+                <option value="ImStucc">ImStucc</option>
+                <option value="CBlock">CBlock</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Exterior 2nd</label>
+              <select id="Exterior2nd">
+                <option value="VinylSd" selected>VinylSd</option>
+                <option value="MetalSd">MetalSd</option>
+                <option value="Wd Shng">Wd Shng</option>
+                <option value="HdBoard">HdBoard</option>
+                <option value="Plywood">Plywood</option>
+                <option value="Wd Sdng">Wd Sdng</option>
+                <option value="CmentBd">CmentBd</option>
+                <option value="BrkFace">BrkFace</option>
+                <option value="Stucco">Stucco</option>
+                <option value="AsbShng">AsbShng</option>
+                <option value="Brk Cmn">Brk Cmn</option>
+                <option value="ImStucc">ImStucc</option>
+                <option value="AsphShn">AsphShn</option>
+                <option value="Stone">Stone</option>
+                <option value="CBlock">CBlock</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Masonry Veneer Type</label>
+              <select id="MasVnrType">
+                <option value="None" selected>None</option>
+                <option value="BrkFace">BrkFace</option>
+                <option value="Stone">Stone</option>
+                <option value="BrkCmn">BrkCmn</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Masonry Veneer Area <span class="unit">(sq ft)</span></label>
+              <input type="number" id="MasVnrArea" placeholder="e.g. 0" min="0" value="0" />
+            </div>
+
+            <div class="field">
+              <label>Exterior Quality</label>
+              <select id="ExterQual">
+                <option value="Ex">Ex — Excellent</option>
+                <option value="Gd" selected>Gd — Good</option>
+                <option value="TA">TA — Average</option>
+                <option value="Fa">Fa — Fair</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Exterior Condition</label>
+              <select id="ExterCond">
+                <option value="Ex">Ex — Excellent</option>
+                <option value="Gd">Gd — Good</option>
+                <option value="TA" selected>TA — Average</option>
+                <option value="Fa">Fa — Fair</option>
+                <option value="Po">Po — Poor</option>
+              </select>
+            </div>
+
+            <div class="field span-2">
+              <label>Foundation</label>
+              <select id="Foundation">
+                <option value="PConc" selected>PConc — Poured Concrete</option>
+                <option value="CBlock">CBlock — Cinder Block</option>
+                <option value="BrkTil">BrkTil — Brick &amp; Tile</option>
+                <option value="Wood">Wood</option>
+                <option value="Slab">Slab</option>
+                <option value="Stone">Stone</option>
+              </select>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <hr class="form-divider" />
+
+      <!-- ── 4. Basement ── -->
+      <div class="form-panel">
+        <div class="section-header">
+          <span class="section-num">04</span>
+          <span class="section-title">Basement</span>
+        </div>
+        <div class="section-body">
+          <div class="form-grid">
+
+            <div class="field">
+              <label>Bsmt Quality</label>
+              <select id="BsmtQual">
+                <option value="None">None — No Basement</option>
+                <option value="Ex">Ex — Excellent</option>
+                <option value="Gd" selected>Gd — Good</option>
+                <option value="TA">TA — Typical</option>
+                <option value="Fa">Fa — Fair</option>
+                <option value="Po">Po — Poor</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Bsmt Condition</label>
+              <select id="BsmtCond">
+                <option value="None">None</option>
+                <option value="Ex">Ex</option>
+                <option value="Gd">Gd</option>
+                <option value="TA" selected>TA</option>
+                <option value="Fa">Fa</option>
+                <option value="Po">Po</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Bsmt Exposure</label>
+              <select id="BsmtExposure">
+                <option value="None">None</option>
+                <option value="Gd">Gd — Good</option>
+                <option value="Av" selected>Av — Average</option>
+                <option value="Mn">Mn — Mimimum</option>
+                <option value="No">No — No exposure</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Bsmt Fin Type 1</label>
+              <select id="BsmtFinType1">
+                <option value="None">None</option>
+                <option value="GLQ" selected>GLQ — Good Living Quarters</option>
+                <option value="ALQ">ALQ — Average Living Quarters</option>
+                <option value="BLQ">BLQ — Below Average</option>
+                <option value="Rec">Rec — Average Rec Room</option>
+                <option value="LwQ">LwQ — Low Quality</option>
+                <option value="Unf">Unf — Unfinished</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Bsmt Fin SF 1 <span class="unit">(sq ft)</span></label>
+              <input type="number" id="BsmtFinSF1" placeholder="e.g. 706" min="0" value="0" />
+            </div>
+
+            <div class="field">
+              <label>Bsmt Fin Type 2</label>
+              <select id="BsmtFinType2">
+                <option value="None" selected>None</option>
+                <option value="GLQ">GLQ</option>
+                <option value="ALQ">ALQ</option>
+                <option value="BLQ">BLQ</option>
+                <option value="Rec">Rec</option>
+                <option value="LwQ">LwQ</option>
+                <option value="Unf">Unf</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Bsmt Fin SF 2 <span class="unit">(sq ft)</span></label>
+              <input type="number" id="BsmtFinSF2" placeholder="e.g. 0" min="0" value="0" />
+            </div>
+
+            <div class="field">
+              <label>Bsmt Unfinished SF <span class="unit">(sq ft)</span></label>
+              <input type="number" id="BsmtUnfSF" placeholder="e.g. 150" min="0" value="150" />
+            </div>
+
+            <div class="field">
+              <label>Total Bsmt SF <span class="unit">(sq ft)</span></label>
+              <input type="number" id="TotalBsmtSF" placeholder="e.g. 856" min="0" value="856" />
+            </div>
+
+            <div class="field">
+              <label>Bsmt Full Bath</label>
+              <input type="number" id="BsmtFullBath" placeholder="0–3" min="0" max="3" value="1" />
+            </div>
+
+            <div class="field">
+              <label>Bsmt Half Bath</label>
+              <input type="number" id="BsmtHalfBath" placeholder="0–2" min="0" max="2" value="0" />
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <hr class="form-divider" />
+
+      <!-- ── 5. HVAC & Utilities ── -->
+      <div class="form-panel">
+        <div class="section-header">
+          <span class="section-num">05</span>
+          <span class="section-title">HVAC &amp; Utilities</span>
+        </div>
+        <div class="section-body">
+          <div class="form-grid">
+
+            <div class="field">
+              <label>Heating</label>
+              <select id="Heating">
+                <option value="GasA" selected>GasA — Gas forced warm air</option>
+                <option value="GasW">GasW — Gas hot water/steam</option>
+                <option value="Grav">Grav — Gravity furnace</option>
+                <option value="Wall">Wall — Wall furnace</option>
+                <option value="OthW">OthW — Hot water/steam</option>
+                <option value="Floor">Floor</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Heating Quality</label>
+              <select id="HeatingQC">
+                <option value="Ex" selected>Ex — Excellent</option>
+                <option value="Gd">Gd — Good</option>
+                <option value="TA">TA — Average</option>
+                <option value="Fa">Fa — Fair</option>
+                <option value="Po">Po — Poor</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Central Air</label>
+              <select id="CentralAir">
+                <option value="Y" selected>Y — Yes</option>
+                <option value="N">N — No</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Electrical System</label>
+              <select id="Electrical">
+                <option value="SBrkr" selected>SBrkr — Standard Circuit Breakers</option>
+                <option value="FuseA">FuseA — Fuse Box 60 Amp+</option>
+                <option value="FuseF">FuseF — Fuse Box 60 Amp</option>
+                <option value="FuseP">FuseP — Fuse Box &lt;60 Amp</option>
+              </select>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <hr class="form-divider" />
+
+      <!-- ── 6. Living Space ── -->
+      <div class="form-panel">
+        <div class="section-header">
+          <span class="section-num">06</span>
+          <span class="section-title">Living Space</span>
+        </div>
+        <div class="section-body">
+          <div class="form-grid">
+
+            <div class="field">
+              <label>1st Floor SF <span class="unit">(sq ft)</span></label>
+              <input type="number" id="FirstFlrSF" placeholder="e.g. 856" min="0" value="856" />
+            </div>
+
+            <div class="field">
+              <label>2nd Floor SF <span class="unit">(sq ft)</span></label>
+              <input type="number" id="SecondFlrSF" placeholder="e.g. 854" min="0" value="854" />
+            </div>
+
+            <div class="field">
+              <label>Low Quality Fin SF <span class="unit">(sq ft)</span></label>
+              <input type="number" id="LowQualFinSF" placeholder="e.g. 0" min="0" value="0" />
+            </div>
+
+            <div class="field">
+              <label>Above Ground Living Area <span class="unit">(sq ft)</span></label>
+              <input type="number" id="GrLivArea" placeholder="e.g. 1710" min="300" value="1710" />
+            </div>
+
+            <div class="field">
+              <label>Full Bathrooms</label>
+              <input type="number" id="FullBath" placeholder="0–4" min="0" max="4" value="2" />
+            </div>
+
+            <div class="field">
+              <label>Half Bathrooms</label>
+              <input type="number" id="HalfBath" placeholder="0–2" min="0" max="2" value="1" />
+            </div>
+
+            <div class="field">
+              <label>Bedrooms Above Grade</label>
+              <input type="number" id="BedroomAbvGr" placeholder="0–8" min="0" max="8" value="3" />
+            </div>
+
+            <div class="field">
+              <label>Kitchens Above Grade</label>
+              <input type="number" id="KitchenAbvGr" placeholder="0–3" min="0" max="3" value="1" />
+            </div>
+
+            <div class="field">
+              <label>Kitchen Quality</label>
+              <select id="KitchenQual">
+                <option value="Ex">Ex — Excellent</option>
+                <option value="Gd" selected>Gd — Good</option>
+                <option value="TA">TA — Typical/Average</option>
+                <option value="Fa">Fa — Fair</option>
+                <option value="Po">Po — Poor</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Total Rooms Above Grade</label>
+              <input type="number" id="TotRmsAbvGrd" placeholder="e.g. 8" min="1" max="20" value="8" />
+            </div>
+
+            <div class="field">
+              <label>Functional</label>
+              <select id="Functional">
+                <option value="Typ" selected>Typ — Typical</option>
+                <option value="Min1">Min1 — Minor Deductions 1</option>
+                <option value="Min2">Min2 — Minor Deductions 2</option>
+                <option value="Mod">Mod — Moderate Deductions</option>
+                <option value="Maj1">Maj1 — Major Deductions 1</option>
+                <option value="Maj2">Maj2 — Major Deductions 2</option>
+                <option value="Sev">Sev — Severely Damaged</option>
+                <option value="Sal">Sal — Salvage only</option>
+              </select>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <hr class="form-divider" />
+
+      <!-- ── 7. Fireplace ── -->
+      <div class="form-panel">
+        <div class="section-header">
+          <span class="section-num">07</span>
+          <span class="section-title">Fireplace</span>
+        </div>
+        <div class="section-body">
+          <div class="form-grid">
+
+            <div class="field">
+              <label>Number of Fireplaces</label>
+              <input type="number" id="Fireplaces" placeholder="0–4" min="0" max="4" value="0" />
+            </div>
+
+            <div class="field">
+              <label>Fireplace Quality</label>
+              <select id="FireplaceQu">
+                <option value="None" selected>None — No Fireplace</option>
+                <option value="Ex">Ex — Excellent</option>
+                <option value="Gd">Gd — Good</option>
+                <option value="TA">TA — Average</option>
+                <option value="Fa">Fa — Fair</option>
+                <option value="Po">Po — Poor</option>
+              </select>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <hr class="form-divider" />
+
+      <!-- ── 8. Garage ── -->
+      <div class="form-panel">
+        <div class="section-header">
+          <span class="section-num">08</span>
+          <span class="section-title">Garage</span>
+        </div>
+        <div class="section-body">
+          <div class="form-grid">
+
+            <div class="field">
+              <label>Garage Type</label>
+              <select id="GarageType">
+                <option value="None">None</option>
+                <option value="Attchd" selected>Attchd — Attached</option>
+                <option value="Detchd">Detchd — Detached</option>
+                <option value="BuiltIn">BuiltIn</option>
+                <option value="Basment">Basment</option>
+                <option value="CarPort">CarPort</option>
+                <option value="2Types">2Types</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Garage Year Built</label>
+              <input type="number" id="GarageYrBlt" placeholder="e.g. 2003" min="1800" max="2025" value="2003" />
+            </div>
+
+            <div class="field">
+              <label>Garage Finish</label>
+              <select id="GarageFinish">
+                <option value="None">None</option>
+                <option value="Fin" selected>Fin — Finished</option>
+                <option value="RFn">RFn — Rough Finished</option>
+                <option value="Unf">Unf — Unfinished</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Garage Cars</label>
+              <input type="number" id="GarageCars" placeholder="0–5" min="0" max="5" value="2" />
+            </div>
+
+            <div class="field">
+              <label>Garage Area <span class="unit">(sq ft)</span></label>
+              <input type="number" id="GarageArea" placeholder="e.g. 548" min="0" value="548" />
+            </div>
+
+            <div class="field">
+              <label>Garage Quality</label>
+              <select id="GarageQual">
+                <option value="None">None</option>
+                <option value="Ex">Ex</option>
+                <option value="Gd">Gd</option>
+                <option value="TA" selected>TA</option>
+                <option value="Fa">Fa</option>
+                <option value="Po">Po</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Garage Condition</label>
+              <select id="GarageCond">
+                <option value="None">None</option>
+                <option value="Ex">Ex</option>
+                <option value="Gd">Gd</option>
+                <option value="TA" selected>TA</option>
+                <option value="Fa">Fa</option>
+                <option value="Po">Po</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Paved Drive</label>
+              <select id="PavedDrive">
+                <option value="Y" selected>Y — Paved</option>
+                <option value="P">P — Partial</option>
+                <option value="N">N — Dirt/Gravel</option>
+              </select>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <hr class="form-divider" />
+
+      <!-- ── 9. Outdoor & Pool ── -->
+      <div class="form-panel">
+        <div class="section-header">
+          <span class="section-num">09</span>
+          <span class="section-title">Outdoor &amp; Pool</span>
+        </div>
+        <div class="section-body">
+          <div class="form-grid cols-3">
+
+            <div class="field">
+              <label>Wood Deck SF</label>
+              <input type="number" id="WoodDeckSF" placeholder="e.g. 0" min="0" value="0" />
+            </div>
+
+            <div class="field">
+              <label>Open Porch SF</label>
+              <input type="number" id="OpenPorchSF" placeholder="e.g. 61" min="0" value="0" />
+            </div>
+
+            <div class="field">
+              <label>Enclosed Porch SF</label>
+              <input type="number" id="EnclosedPorch" placeholder="e.g. 0" min="0" value="0" />
+            </div>
+
+            <div class="field">
+              <label>3-Season Porch SF</label>
+              <input type="number" id="ThreeSsnPorch" placeholder="e.g. 0" min="0" value="0" />
+            </div>
+
+            <div class="field">
+              <label>Screen Porch SF</label>
+              <input type="number" id="ScreenPorch" placeholder="e.g. 0" min="0" value="0" />
+            </div>
+
+            <div class="field">
+              <label>Pool Area <span class="unit">(sq ft)</span></label>
+              <input type="number" id="PoolArea" placeholder="e.g. 0" min="0" value="0" />
+            </div>
+
+            <div class="field">
+              <label>Pool Quality</label>
+              <select id="PoolQC">
+                <option value="None" selected>None</option>
+                <option value="Ex">Ex — Excellent</option>
+                <option value="Gd">Gd — Good</option>
+                <option value="TA">TA — Average</option>
+                <option value="Fa">Fa — Fair</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Fence</label>
+              <select id="Fence">
+                <option value="None" selected>None</option>
+                <option value="GdPrv">GdPrv — Good Privacy</option>
+                <option value="MnPrv">MnPrv — Minimum Privacy</option>
+                <option value="GdWo">GdWo — Good Wood</option>
+                <option value="MnWw">MnWw — Minimum Wood/Wire</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Misc Feature</label>
+              <select id="MiscFeature">
+                <option value="None" selected>None</option>
+                <option value="Shed">Shed</option>
+                <option value="Gar2">Gar2 — 2nd Garage</option>
+                <option value="Othr">Othr</option>
+                <option value="TenC">TenC — Tennis Court</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Misc Value <span class="unit">($)</span></label>
+              <input type="number" id="MiscVal" placeholder="e.g. 0" min="0" value="0" />
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <hr class="form-divider" />
+
+      <!-- ── 10. Sale Info ── -->
+      <div class="form-panel">
+        <div class="section-header">
+          <span class="section-num">10</span>
+          <span class="section-title">Sale Information</span>
+        </div>
+        <div class="section-body">
+          <div class="form-grid">
+
+            <div class="field">
+              <label>Month Sold</label>
+              <select id="MoSold">
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6" selected>June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Year Sold</label>
+              <input type="number" id="YrSold" placeholder="e.g. 2010" min="2000" max="2030" value="2010" />
+            </div>
+
+            <div class="field">
+              <label>Sale Type</label>
+              <select id="SaleType">
+                <option value="WD" selected>WD — Warranty Deed Conventional</option>
+                <option value="CWD">CWD — Warranty Deed Cash</option>
+                <option value="VWD">VWD — Warranty Deed VA Loan</option>
+                <option value="New">New — Home just constructed</option>
+                <option value="COD">COD — Court Officer Deed/Estate</option>
+                <option value="Con">Con — Contract 15% down</option>
+                <option value="ConLw">ConLw — Contract low interest</option>
+                <option value="ConLI">ConLI — Contract low income</option>
+                <option value="ConLD">ConLD — Contract low down</option>
+                <option value="Oth">Oth — Other</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Sale Condition</label>
+              <select id="SaleCondition">
+                <option value="Normal" selected>Normal</option>
+                <option value="Abnorml">Abnorml — Abnormal Sale</option>
+                <option value="AdjLand">AdjLand — Adjoining Land Purchase</option>
+                <option value="Alloca">Alloca — Allocation</option>
+                <option value="Family">Family — Sale between family members</option>
+                <option value="Partial">Partial — Home not completed</option>
+              </select>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </form><!-- /houseForm -->
+  </main>
+
+  <!-- ══════════════════════════════════════════
+       RIGHT — SIDEBAR
+  ══════════════════════════════════════════ -->
+  <aside class="sidebar">
+
+    <!-- Result card -->
+    <div class="result-card" id="resultCard">
+      <div class="section-header">
+        <span class="section-num">AI</span>
+        <span class="section-title">Predicted Price</span>
+      </div>
+      <div class="result-inner" id="resultInner">
+        <p class="result-idle">Awaiting prediction…</p>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div class="error-msg" id="errorBox"></div>
+
+    <!-- Predict button -->
+    <button class="predict-btn" id="predictBtn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 2 13 9 22 9"/><path d="M3 15a9 9 0 1 0 9-9"/><polyline points="9 15 3 15 3 21"/></svg>
+      Predict Price
+    </button>
+
+    <!-- Reset -->
+    <button class="reset-btn" id="resetBtn">↺ Reset Form</button>
+
+    <!-- Info box -->
+    <div class="info-box">
+      <strong>About this model</strong>
+      CatBoost Regressor trained on the Ames Housing Dataset. Features are preprocessed through a Scikit-Learn pipeline including imputation, feature engineering, and log transforms. Predictions are returned in actual dollar values.
+    </div>
+
+  </aside>
+
+</div><!-- /app-wrapper -->
+
+<script src="/static/script.js"></script>
+</body>
+</html>

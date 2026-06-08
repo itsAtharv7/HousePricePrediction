@@ -1,0 +1,63 @@
+# ── Python ──────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# ── Virtual environments ─────────────────────────────
+venv/
+env/
+.venv/
+.env/
+ENV/
+
+# ── Jupyter ──────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# ── Model files (large binaries) ────────────────────
+*.joblib
+*.pkl
+*.pickle
+*.h5
+*.pt
+*.pth
+
+# ── Data files ───────────────────────────────────────
+data/
+*.csv
+*.xlsx
+*.xls
+*.parquet
+
+# ── IDE / OS ─────────────────────────────────────────
+.vscode/
+.idea/
+*.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Environment variables ────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ── Logs & temp ──────────────────────────────────────
+*.log
+*.tmp
+*.temp
+/tmp/
+
+# ── Distribution / packaging ─────────────────────────
+dist/
+build/
+*.egg-info/
+.eggs/
+
+# ── Raw working files (not for public repo) ──────────
+Raw wrok/
+raw_work/
+drafts/
