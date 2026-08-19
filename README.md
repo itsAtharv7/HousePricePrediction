@@ -274,4 +274,4 @@ This project is licensed under the MIT License — see [LICENSE](LICENSE) for de
 [![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)](https://github.com/<your-username>)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat&logo=linkedin&logoColor=white)](https://linkedin.com/in/<your-profile>)
 
-> ⭐ If this project helped you, consider giving it a star!
+> ⭐ If this project helped you, consider giving it a star! 
